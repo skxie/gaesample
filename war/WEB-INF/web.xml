@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns="http://java.sun.com/xml/ns/javaee"
+xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+	<servlet>
+		<servlet-name>GaeProject</servlet-name>
+		<servlet-class>servlet.GaeProjectServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>GaeProject</servlet-name>
+		<url-pattern>/gaeproject</url-pattern>
+	</servlet-mapping>
+	<servlet>  
+    	<servlet-name>fileUpload</servlet-name>  
+    	<servlet-class>servlet.FileUploadServlet</servlet-class>  
+	</servlet>  
+	<servlet-mapping>  
+    	<servlet-name>fileUpload</servlet-name>  
+    	<url-pattern>/fileUpload</url-pattern>  
+	</servlet-mapping>
+	<servlet>
+    	<description></description>
+    	<display-name>findfile</display-name>
+    	<servlet-name>findfile</servlet-name>
+    	<servlet-class>servlet.FileFinderServlet</servlet-class>
+  	</servlet>
+  	<servlet-mapping>
+    	<servlet-name>findfile</servlet-name>
+    	<url-pattern>/findfile</url-pattern>
+  	</servlet-mapping>
+  	<servlet>
+    	<description></description>
+    	<display-name>removefile</display-name>
+    	<servlet-name>removefile</servlet-name>
+    	<servlet-class>servlet.RemoveFileServlet</servlet-class>
+  	</servlet>
+  	<servlet-mapping>
+    	<servlet-name>removefile</servlet-name>
+    	<url-pattern>/removefile</url-pattern>
+  	</servlet-mapping>
+  	<servlet>
+    	<description></description>
+    	<display-name>listfile</display-name>
+    	<servlet-name>listfile</servlet-name>
+    	<servlet-class>servlet.ListFileServlet</servlet-class>
+  	</servlet>
+  	<servlet-mapping>
+    	<servlet-name>listfile</servlet-name>
+    	<url-pattern>/listfile</url-pattern>
+  	</servlet-mapping>
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+</web-app>
