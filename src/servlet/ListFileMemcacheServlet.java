@@ -24,6 +24,8 @@ import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.apphosting.api.search.DocumentPb.Document.Storage;
 
+import functions.FileList;
+
 public class ListFileMemcacheServlet extends HttpServlet {
 
 	public static final String BUCKETNAME = "myhomeworkdataset";
@@ -36,8 +38,25 @@ public class ListFileMemcacheServlet extends HttpServlet {
   	    try {
   	    	MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
   	    	syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
-  	    	ArrayList<String> value = (ArrayList<String>) syncCache.get("filelist4");
+  	    	FileList fileList = new FileList();
+  	    	ArrayList<String> filelist = new ArrayList<String>();
+  	    	try {
+    			ArrayList<String> value = (ArrayList<String>)syncCache.get("filelist");
+    			if (value == null) {
+    				filelist = fileList.getFileList();
+    				syncCache.put("filelist", filelist);
+    			} else {
+    				//filelist = value;
+    				for (String st : value) {
+   	       	    	 res.getWriter().println(st);
+   	       	     	}
+    			}
+    		} catch (Exception e) {
+    			filelist = fileList.getFileList();
+    			syncCache.put("filelist", filelist);
+    		}
   	    	//String value = (String) syncCache.get("filelist4");
+  	    	/*
   	    	if (value == null) {
   	    		String keys = "/gs/" + BUCKETNAME + "/filelist";
   	  	    	res.setContentType("text/plain");
@@ -76,14 +95,14 @@ public class ListFileMemcacheServlet extends HttpServlet {
 	       	     //res.getWriter().println(test);
 	       	     //res.getWriter().println(test.length());
 	       	     //res.getWriter().println(content.length());
-	       	      * */
+	       	      
 	       	      
   	    	} else {
   	    		for (String st : value) {
 	       	    	 res.getWriter().println(st);
 	       	     }
   	    	}
-  	    	
+  	    	* */
       	     
   	    } catch (IOException ex) {
   	    	//res.getWriter().println("No such a file named " + req.getParameter("filename"));
