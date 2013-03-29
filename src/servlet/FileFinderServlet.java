@@ -38,7 +38,9 @@ public class FileFinderServlet extends HttpServlet {
   	    	res.setContentType("text/plain");
   	    	FileService fileService = FileServiceFactory.getFileService();
        	     AppEngineFile readableFile = new AppEngineFile(filename);
-       	     FileReadChannel readChannel = fileService.openReadChannel(readableFile, false);
+       	     int fileSize = fileService.stat(readableFile).getLength().intValue();
+    	     res.getWriter().println("The file size is " + fileSize);
+    	     FileReadChannel readChannel = fileService.openReadChannel(readableFile, false);
        	     // Again, different standard Java ways of reading from the channel.
        	     BufferedReader reader = new BufferedReader(Channels.newReader(readChannel, "UTF8"));
        	     String line = new String();
@@ -49,7 +51,7 @@ public class FileFinderServlet extends HttpServlet {
        	     readChannel.close();
   	    } catch (IOException ex) {
   	    	res.getWriter().println("No such a file named " + req.getParameter("filename"));
-  	    	//throw new ServletException(ex);
+  	    	throw new ServletException(ex);
   	    }
   	  }
 }

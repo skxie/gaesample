@@ -50,6 +50,44 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
     	<servlet-name>listfile</servlet-name>
     	<url-pattern>/listfile</url-pattern>
   	</servlet-mapping>
+  	<servlet>
+    	<description></description>
+    	<display-name>findfilemem</display-name>
+    	<servlet-name>findfilemem</servlet-name>
+    	<servlet-class>servlet.FileFinderMemcacheServlet</servlet-class>
+  	</servlet>
+  	<servlet-mapping>
+    	<servlet-name>findfilemem</servlet-name>
+    	<url-pattern>/findfilemem</url-pattern>
+  	</servlet-mapping>
+  	<servlet>
+    	<description></description>
+    	<display-name>listfilemem</display-name>
+    	<servlet-name>listfilemem</servlet-name>
+    	<servlet-class>servlet.ListFileMemcacheServlet</servlet-class>
+  	</servlet>
+  	<servlet-mapping>
+    	<servlet-name>listfilemem</servlet-name>
+    	<url-pattern>/listfilemem</url-pattern>
+  	</servlet-mapping>
+  	<servlet>
+    	<description></description>
+    	<display-name>removefilemem</display-name>
+    	<servlet-name>removefilemem</servlet-name>
+    	<servlet-class>servlet.RemoveFileMemcacheServlet</servlet-class>
+  	</servlet>
+  	<servlet-mapping>
+    	<servlet-name>removefilemem</servlet-name>
+    	<url-pattern>/removefilemem</url-pattern>
+  	</servlet-mapping>
+  	<servlet>  
+    	<servlet-name>fileuploadmem</servlet-name>  
+    	<servlet-class>servlet.FileUploadMemcacheServlet</servlet-class>  
+	</servlet>  
+	<servlet-mapping>  
+    	<servlet-name>fileuploadmem</servlet-name>  
+    	<url-pattern>/fileuploadmem</url-pattern>  
+	</servlet-mapping>
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>

@@ -1,5 +1,6 @@
 package servlet;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -46,7 +47,7 @@ public class FileUploadServlet extends HttpServlet {
     	      while (iterator.hasNext()) {
     	        FileItemStream item = iterator.next();
     	        InputStream stream = item.openStream();
-
+    	        //BufferedInputStream bfstream = new BufferedInputStream(item.openStream());
     	        if (item.isFormField()) {
     	          //log.warning("Got a form field: " + item.getFieldName());
     	        } else {
@@ -67,7 +68,8 @@ public class FileUploadServlet extends HttpServlet {
           	     FileWriteChannel writeChannel = fileService.openWriteChannel(writableFile, lock);
           	     // Different standard Java ways of writing to the channel
           	     // are possible. Here we use a PrintWriter:
-          	     PrintWriter out = new PrintWriter(Channels.newWriter(writeChannel, "UTF8"));
+          	     //PrintWriter out = new PrintWriter(Channels.newWriter(writeChannel, "UTF8"));
+          	     
     	          // You now have the filename (item.getName() and the
     	          // contents (which you can read from stream). Here we just
     	          // print them back out to the servlet output stream, but you
@@ -76,12 +78,22 @@ public class FileUploadServlet extends HttpServlet {
     	          // datastore).
     	          int len;
     	          byte[] buffer = new byte[1024];
-    	          while ((len = stream.read(buffer, 0, buffer.length)) != -1) {
+    	          //len = bfstream.read(buffer);
+    	          //res.getWriter().println(buffer);
+    	          //while (len > 0) {
+    	          //while ((len = bfstream.read(buffer)) > 0) {
+    	          while ((len = stream.read(buffer, 0, 1024)) != -1) {
     	            //res.getOutputStream().write(buffer, 0, len);
     	        	//out.print(buffer);
-    	        	  writeChannel.write(ByteBuffer.wrap(buffer));
+    	        	  writeChannel.write(ByteBuffer.wrap(buffer, 0, len));
+    	        	  //writeChannel.write(ByteBuffer.wrap(info));
+    	        	  //res.getOutputStream().write(buffer, 0, len);
+    	        	  //res.getOutputStream().write(info, 0, info.length);
+    	        	  //res.getWriter().println("-----one buffer -----");
+    	        	  //len = bfstream.read(buffer);
+    	        	  //buffer = new byte[1024];
     	          }
-    	          out.close();
+    	          //out.close();
     	          //String path = writableFile.getFullPath();
     	 	     // Write more to the file in a separate request:
     	 	     //writableFile = new AppEngineFile(path);
@@ -91,7 +103,7 @@ public class FileUploadServlet extends HttpServlet {
     	 	     //writeChannel = fileService.openWriteChannel(writableFile, lock);
                   writeChannel.closeFinally();
                   stream.close();
-                  
+                  /*
                  filename = "/gs/" + BUCKETNAME + "/" + filename;
          	     AppEngineFile readableFile = new AppEngineFile(filename);
          	     FileReadChannel readChannel = fileService.openReadChannel(readableFile, false);
@@ -103,6 +115,8 @@ public class FileUploadServlet extends HttpServlet {
 
          	    // line = "The woods are lovely, dark, and deep."
          	     readChannel.close();
+         	     */
+                  res.getWriter().println(1);
     	        }
     	      }
     	    } catch (Exception ex) {
