@@ -48,7 +48,8 @@ public class FileList {
 		try {
 			ArrayList<String> fileList = this.getFileList();
 			//add the file name into the file list
-      	    fileList.add(filename);
+			if (!fileList.contains(filename))
+				fileList.add(filename);
       	    FileService fileService = FileServiceFactory.getFileService();
      	    GSFileOptionsBuilder optionsBuilder = new GSFileOptionsBuilder()
    	         	.setBucket(BUCKETNAME)
