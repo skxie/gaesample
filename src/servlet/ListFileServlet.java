@@ -26,19 +26,18 @@ public class ListFileServlet extends HttpServlet {
     
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
   	    try {
+  	    	// retrieve file list
   	    	String keys = "/gs/" + BUCKETNAME + "/filelist";
   	    	res.setContentType("text/plain");
   	    	FileService fileService = FileServiceFactory.getFileService();
       	     AppEngineFile readableFile = new AppEngineFile(keys);
       	     FileReadChannel readChannel = fileService.openReadChannel(readableFile, false);
-      	     // Again, different standard Java ways of reading from the channel.
       	     BufferedReader reader = new BufferedReader(Channels.newReader(readChannel, "UTF8"));
       	     String line = new String();
+      	     //get each file name
       	     while ((line = reader.readLine()) != null) {
       	    	 res.getWriter().println(line);
       	     }
-
-      	    // line = "The woods are lovely, dark, and deep."
       	     readChannel.close();
   	    } catch (IOException ex) {
   	    	//res.getWriter().println("No such a file named " + req.getParameter("filename"));

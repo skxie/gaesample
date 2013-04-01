@@ -4,12 +4,12 @@
 <html>  
   <head>  
     
-    <title>find file</title>  
+    <title>check file</title>  
   </head>  
     <body>  
-        <h3>Find File</h3>  
+        <h3>Check File</h3>  
         <hr />  
-        <form action="findfile" method="post">  
+        <form action="checkfile" method="post">  
             <table>  
                 <tr>  
                     <td>  
@@ -24,7 +24,7 @@
                            
                     </td>  
                     <td>  
-                        <input type="submit" value="Find File" />  
+                        <input type="submit" value="Check File" />  
                     </td>  
                 </tr>  
             </table>  

@@ -1,6 +1,7 @@
 package servlet;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -23,7 +24,7 @@ import com.google.appengine.api.files.FileServiceFactory;
 import com.google.appengine.api.files.FileWriteChannel;
 import com.google.appengine.api.files.GSFileOptions.GSFileOptionsBuilder;
 
-public class FileFinderServlet extends HttpServlet {
+public class CheckFileServlet extends HttpServlet {
 
 	public static final String BUCKETNAME = "myhomeworkdataset";
 	  
@@ -43,12 +44,15 @@ public class FileFinderServlet extends HttpServlet {
        	     BufferedReader reader = new BufferedReader(Channels.newReader(readChannel, "UTF8"));
        	     String line = new String();
        	     //read the file
-       	     while ((line = reader.readLine()) != null)
-       	    	 res.getWriter().println(line);
+       	     line = reader.readLine();
+       	     //If read successfully, the file exists, otherwise, it will be catched by IOExcpetion
+       	     res.getWriter().println("The file " + req.getParameter("filename") + " exists.");
        	     readChannel.close();
+  	    } catch (FileNotFoundException e) {
+  	    	res.getWriter().println("No such a file named " + req.getParameter("filename"));
   	    } catch (IOException ex) {
   	    	res.getWriter().println("No such a file named " + req.getParameter("filename"));
-  	    	throw new ServletException(ex);
-  	    }
+  	    	//throw new ServletException(ex);
+  	    } 
   	  }
 }

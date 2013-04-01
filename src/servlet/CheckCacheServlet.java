@@ -1,11 +1,13 @@
 package servlet;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
+import java.util.logging.Level;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -22,8 +24,11 @@ import com.google.appengine.api.files.FileService;
 import com.google.appengine.api.files.FileServiceFactory;
 import com.google.appengine.api.files.FileWriteChannel;
 import com.google.appengine.api.files.GSFileOptions.GSFileOptionsBuilder;
+import com.google.appengine.api.memcache.ErrorHandlers;
+import com.google.appengine.api.memcache.MemcacheService;
+import com.google.appengine.api.memcache.MemcacheServiceFactory;
 
-public class FileFinderServlet extends HttpServlet {
+public class CheckCacheServlet extends HttpServlet {
 
 	public static final String BUCKETNAME = "myhomeworkdataset";
 	  
@@ -32,23 +37,17 @@ public class FileFinderServlet extends HttpServlet {
     }
     
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-  	    try {
-  	    	
-  	    	String filename = "/gs/" + BUCKETNAME + "/" +req.getParameter("filename");
-  	    	res.setContentType("text/plain");
-  	    	FileService fileService = FileServiceFactory.getFileService();
-       	     AppEngineFile readableFile = new AppEngineFile(filename);
-       	     int fileSize = fileService.stat(readableFile).getLength().intValue();
-    	     FileReadChannel readChannel = fileService.openReadChannel(readableFile, false);
-       	     BufferedReader reader = new BufferedReader(Channels.newReader(readChannel, "UTF8"));
-       	     String line = new String();
-       	     //read the file
-       	     while ((line = reader.readLine()) != null)
-       	    	 res.getWriter().println(line);
-       	     readChannel.close();
-  	    } catch (IOException ex) {
-  	    	res.getWriter().println("No such a file named " + req.getParameter("filename"));
-  	    	throw new ServletException(ex);
+  	    //find whether the file exists in memecache first
+  	    MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+  	    syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
+  	    res.setContentType("text/plain");
+  	    String value = (String) syncCache.get(req.getParameter("filename"));
+  	    if (value == null) {
+  	    	//if not in memache, return no
+  	    	res.getWriter().println("No such a file named " + req.getParameter("filename") + " in memcache.");
+  	    } else {
+  	    	// get file from memcache
+  	    	res.getWriter().println("The file " + req.getParameter("filename") + " exists in memcache.");
   	    }
   	  }
 }

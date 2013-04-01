@@ -23,9 +23,11 @@ import com.google.appengine.api.memcache.ErrorHandlers;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
 
+import functions.FileFinderMemThreaded;
+import functions.FileFinderThreaded;
 import functions.FileList;
 
-public class FileFinderMemBenServlet extends HttpServlet {
+public class FileFinderMemThreadedBenServlet extends HttpServlet {
 
 	public static final String BUCKETNAME = "myhomeworkdataset";
 	  
@@ -36,8 +38,8 @@ public class FileFinderMemBenServlet extends HttpServlet {
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
     	
     	try {
-  	    	//retrieve file list from memcache
-    		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+    		//retrieve file list from memcache
+  	    	MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
   	    	syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
   	    	FileList fileList = new FileList();
     		ArrayList<String> filelist = new ArrayList<String>();
@@ -51,38 +53,39 @@ public class FileFinderMemBenServlet extends HttpServlet {
     		} catch (Exception e) {
     			filelist = fileList.getFileList();
     		}
-			//find a file
+			
+    		//get four random files
     		Random random = new Random();
-    		double start = System.currentTimeMillis();
-    		for (int i = 0; i < 1; i++) {
+    		FileFinderMemThreaded[] ft = new FileFinderMemThreaded[4];
+    		for (int i = 0; i < 4; i++) {
     			int pos = random.nextInt(411);
     			String filename = filelist.get(pos);
-    			String value = (String)syncCache.get(filename);
-    			if (value == null) {
-    				filename = "/gs/" + BUCKETNAME + "/" + filename;
-    				FileService fileService = FileServiceFactory.getFileService();
-    				AppEngineFile readableFile = new AppEngineFile(filename);
-    				FileReadChannel readChannel = fileService.openReadChannel(readableFile, false);
-    				BufferedReader reader = new BufferedReader(Channels.newReader(readChannel, "UTF8"));
-    				String line = new String();
-    				String content = new String();
-    				while ((line = reader.readLine()) != null)
-    					content += line + "\n";
-	    			readChannel.close();
-	    			syncCache.put(filelist.get(pos), content);
-    			} else {
-    				String content = value;
-    			}
+    			ft[i] = new FileFinderMemThreaded();
+    			ft[i].setFilename(filename);
     		}
+    		double start = System.currentTimeMillis();
+    		//each thread access one file
+    		Thread thread0 = ThreadManager.createThreadForCurrentRequest(ft[0]);
+  	    	thread0.start();
+  	    	Thread thread1 = ThreadManager.createThreadForCurrentRequest(ft[1]);
+  	    	thread1.start();
+  	    	Thread thread2 = ThreadManager.createThreadForCurrentRequest(ft[2]);
+  	    	thread2.start();
+  	    	Thread thread3 = ThreadManager.createThreadForCurrentRequest(ft[3]);
+  	    	thread3.start();
+  	    	thread0.join();
+  	    	thread1.join();
+  	    	thread2.join();
+  	    	thread3.join();
     		double end = System.currentTimeMillis();
-    		// record execution time
+    		//record execution time
     		FileService fileService = FileServiceFactory.getFileService();
     		GSFileOptionsBuilder optionsBuilder = new GSFileOptionsBuilder()
     			.setBucket(BUCKETNAME)
-    			.setKey("fileFinderMemBen")
+    			.setKey("fileFinderMemThreadedBen")
     			.setMimeType("text/html")
     			.setAcl("public_read")
-    			.addUserMetadata("fileId", "fileFinderMemBen");
+    			.addUserMetadata("fileId", "fileFinderMemThreadedBen");
     		AppEngineFile writableFile = fileService.createNewGSFile(optionsBuilder.build());
     		boolean lock = true;
     		FileWriteChannel writeChannel = fileService.openWriteChannel(writableFile, lock);
@@ -92,6 +95,8 @@ public class FileFinderMemBenServlet extends HttpServlet {
     		writeChannel.closeFinally();
 		} catch (IOException ex) {
 			//res.getWriter().println("No such a file");
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
   	}
 }

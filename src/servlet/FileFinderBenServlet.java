@@ -30,13 +30,14 @@ public class FileFinderBenServlet extends HttpServlet {
     
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
     	try {
+    		//retrieve file list
   	    	FileList fileList = new FileList();
   	    	ArrayList<String> filelist = fileList.getFileList();
   	    	
   	    	Random random = new Random();
   	    	double start = System.currentTimeMillis();
-  	    	for (int i = 0; i < 10; i++) {
-  	    		int pos = random.nextInt(5);
+  	    	for (int i = 0; i < 1; i++) {
+  	    		int pos = random.nextInt(411);
   	    		String filename = "/gs/" + BUCKETNAME + "/" + filelist.get(pos);
   	  	    	FileService fileService = FileServiceFactory.getFileService();
   	       	    AppEngineFile readableFile = new AppEngineFile(filename);
@@ -48,6 +49,7 @@ public class FileFinderBenServlet extends HttpServlet {
   	       	    readChannel.close();
   	    	}
   	    	double end = System.currentTimeMillis();
+  	    	//record execution time
   	    	FileService fileService = FileServiceFactory.getFileService();
     	    GSFileOptionsBuilder optionsBuilder = new GSFileOptionsBuilder()
     	         .setBucket(BUCKETNAME)

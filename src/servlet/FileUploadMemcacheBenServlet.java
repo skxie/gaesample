@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -36,6 +37,8 @@ import com.google.appengine.api.memcache.ErrorHandlers;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
 
+import functions.FileList;
+
 public class FileUploadMemcacheBenServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;  
 	public static final String BUCKETNAME = "myhomeworkdataset";
@@ -54,6 +57,7 @@ public class FileUploadMemcacheBenServlet extends HttpServlet {
     	      FileItemIterator iterator = upload.getItemIterator(req);
     	      double start = System.currentTimeMillis();
     	      while (iterator.hasNext()) {
+    	    	  //get file list
     	        FileItemStream item = iterator.next();
     	        InputStream stream = item.openStream();
     	        if (item.isFormField()) {
@@ -73,6 +77,7 @@ public class FileUploadMemcacheBenServlet extends HttpServlet {
           	      FileWriteChannel writeChannel = fileService.openWriteChannel(writableFile, lock);
           	      int len;
     	          byte[] buffer = new byte[1024];
+    	          // write local file into Google Cloud Storage
     	          while ((len = stream.read(buffer, 0, 1024)) != -1) {
     	            writeChannel.write(ByteBuffer.wrap(buffer, 0, len));
     	          }
@@ -82,6 +87,8 @@ public class FileUploadMemcacheBenServlet extends HttpServlet {
                   AppEngineFile readableFile = new AppEngineFile(filename);
                   int fileSize = fileService.stat(readableFile).getLength().intValue();
            	      FileReadChannel readChannel = fileService.openReadChannel(readableFile, false);
+           	      MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+           	      syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
            	      if (fileSize <= 102400) {
                 	 BufferedReader reader = new BufferedReader(Channels.newReader(readChannel, "UTF8"));
               	     String line = new String();
@@ -89,14 +96,18 @@ public class FileUploadMemcacheBenServlet extends HttpServlet {
               	     while ((line = reader.readLine()) != null)
               	    	 content += line + "\n";
               	    readChannel.close();
-              	    MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
-         	    	syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
-         	    	syncCache.delete(item.getName());
+              	    //cache the file content into memcache
+              	    syncCache.delete(item.getName());
          	    	syncCache.put(item.getName(), content);
                   }
+           	      FileList flist = new FileList();
+           	      flist.addFile(filename);
+           	      ArrayList<String> flistmem = flist.getFileList();
+           	      syncCache.put("filelist", flistmem);
     	        }
     	      }
     	      double end = System.currentTimeMillis();
+    	      // record execution time
     	      FileService fileService = FileServiceFactory.getFileService();
       	      GSFileOptionsBuilder optionsBuilder = new GSFileOptionsBuilder()
       	         .setBucket(BUCKETNAME)

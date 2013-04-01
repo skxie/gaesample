@@ -4,21 +4,29 @@ xmlns="http://java.sun.com/xml/ns/javaee"
 xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
-	<servlet>
-		<servlet-name>GaeProject</servlet-name>
-		<servlet-class>servlet.GaeProjectServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>GaeProject</servlet-name>
-		<url-pattern>/gaeproject</url-pattern>
-	</servlet-mapping>
 	<servlet>  
-    	<servlet-name>fileuploadben</servlet-name>  
-    	<servlet-class>servlet.FileUploadBenServlet</servlet-class>  
+    	<servlet-name>checkcache</servlet-name>  
+    	<servlet-class>servlet.CheckCacheServlet</servlet-class>  
 	</servlet>  
 	<servlet-mapping>  
-    	<servlet-name>fileuploadben</servlet-name>  
-    	<url-pattern>/fileuploadben</url-pattern>  
+    	<servlet-name>checkcache</servlet-name>  
+    	<url-pattern>/checkcache</url-pattern>  
+	</servlet-mapping>
+	<servlet>  
+    	<servlet-name>checkfile</servlet-name>  
+    	<servlet-class>servlet.CheckFileServlet</servlet-class>  
+	</servlet>  
+	<servlet-mapping>  
+    	<servlet-name>checkfile</servlet-name>  
+    	<url-pattern>/checkfile</url-pattern>  
+	</servlet-mapping>
+	<servlet>
+    	<servlet-name>checkfilemem</servlet-name>  
+    	<servlet-class>servlet.CheckFileMemServlet</servlet-class>  
+	</servlet>  
+	<servlet-mapping>  
+    	<servlet-name>checkfilemem</servlet-name>  
+    	<url-pattern>/checkfilemem</url-pattern>  
 	</servlet-mapping>
 	<servlet>
     	<description></description>
@@ -81,6 +89,14 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
     	<url-pattern>/removefilemem</url-pattern>
   	</servlet-mapping>
   	<servlet>  
+    	<servlet-name>fileuploadben</servlet-name>  
+    	<servlet-class>servlet.FileUploadBenServlet</servlet-class>  
+	</servlet>  
+	<servlet-mapping>  
+    	<servlet-name>fileuploadben</servlet-name>  
+    	<url-pattern>/fileuploadben</url-pattern>  
+	</servlet-mapping>
+  	<servlet>  
     	<servlet-name>fileuploadmemben</servlet-name>  
     	<servlet-class>servlet.FileUploadMemcacheBenServlet</servlet-class>  
 	</servlet>  
@@ -128,6 +144,54 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
     	<servlet-name>findfilememben</servlet-name>
     	<url-pattern>/findfilememben</url-pattern>
   	</servlet-mapping>
+    <servlet>
+    	<description></description>
+    	<display-name>findfilethreadedben</display-name>
+    	<servlet-name>findfilethreadedben</servlet-name>
+    	<servlet-class>servlet.FileFinderThreadedBenServlet</servlet-class>
+  	</servlet>
+  	<servlet-mapping>
+    	<servlet-name>findfilethreadedben</servlet-name>
+    	<url-pattern>/findfilethreadedben</url-pattern>
+  	</servlet-mapping>
+  	 <servlet>
+    	<description></description>
+    	<display-name>findfilememthreadedben</display-name>
+    	<servlet-name>findfilememthreadedben</servlet-name>
+    	<servlet-class>servlet.FileFinderMemThreadedBenServlet</servlet-class>
+  	</servlet>
+  	<servlet-mapping>
+    	<servlet-name>findfilememthreadedben</servlet-name>
+    	<url-pattern>/findfilememthreadedben</url-pattern>
+  	</servlet-mapping>removeallfilesthreadedben
+  	<servlet>
+    	<description></description>
+    	<display-name>removeallfilesthreadedben</display-name>
+    	<servlet-name>removeallfilesthreadedben</servlet-name>
+    	<servlet-class>servlet.RemoveAllFilesThreadedBenServlet</servlet-class>
+  	</servlet>
+  	<servlet-mapping>
+    	<servlet-name>removeallfilesthreadedben</servlet-name>
+    	<url-pattern>/removeallfilesthreadedben</url-pattern>
+  	</servlet-mapping>
+	<servlet>
+    	<description></description>
+    	<display-name>removeallfilesmemthreadedben</display-name>
+    	<servlet-name>removeallfilesmemthreadedben</servlet-name>
+    	<servlet-class>servlet.RemoveAllFilesMemThreadedBenServlet</servlet-class>
+  	</servlet>
+  	<servlet-mapping>
+    	<servlet-name>removeallfilesmemthreadedben</servlet-name>
+    	<url-pattern>/removeallfilesmemthreadedben</url-pattern>
+  	</servlet-mapping>fileuploadmemthreadedben
+  	<servlet>  
+    	<servlet-name>fileuploadmemthreadedben</servlet-name>  
+    	<servlet-class>servlet.FileUploadMemThreadedBenServlet</servlet-class>  
+	</servlet>  
+	<servlet-mapping>  
+    	<servlet-name>fileuploadmemthreadedben</servlet-name>  
+    	<url-pattern>/fileuploadmemthreadedben</url-pattern>  
+	</servlet-mapping>
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>

@@ -29,7 +29,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                            
                     </td>  
                     <td>  
-                        <input type="submit" value="Find File" />  
+                        <input type="submit" value="Upload File" />  
                     </td>  
                 </tr>  
             </table>  
